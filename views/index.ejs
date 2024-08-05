@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kvíz</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="/styles/main.css" />
+  </head>
+
+  <body id="app">
+    <div class="btn-group" role="group" aria-label="Basic example">
+      <div class="dropdown">
+        <button
+          class="btn dropdown-button dropdown-toggle"
+          type="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          Kontinent
+        </button>
+        <ul class="dropdown-menu">
+          <li>
+            <a
+              class="dropdown-item"
+              role="button"
+              data-choice="continent"
+              data-continent="world"
+              >Svět</a
+            >
+          </li>
+          <li>
+            <a
+              class="dropdown-item"
+              role="button"
+              data-choice="continent"
+              data-continent="Europe"
+              >Evropa</a
+            >
+          </li>
+          <li>
+            <a
+              class="dropdown-item"
+              role="button"
+              data-choice="continent"
+              data-continent="Asia"
+              >Asie</a
+            >
+          </li>
+          <li>
+            <a
+              class="dropdown-item"
+              role="button"
+              data-choice="continent"
+              data-continent="Africa"
+              >Afrika</a
+            >
+          </li>
+        </ul>
+      </div>
+      <button type="button" class="btn choice-button" data-choice="capital">
+        Hlavní města
+      </button>
+      <button type="button" class="btn choice-button" data-choice="currency">
+        Měna
+      </button>
+      <button type="button" class="btn choice-button" data-choice="MPZ">
+        MPZ
+      </button>
+      <button type="button" class="btn choice-button" data-choice="location">
+        Lokace
+      </button>
+      <button type="button" class="btn choice-button" data-choice="religion">
+        Vyznání
+      </button>
+      <button type="button" class="btn choice-button" data-choice="stateSystem">
+        Státní systém
+      </button>
+    </div>
+
+    <div id="help-window" class="help-window">
+      <p id="help-text"></p>
+
+      <button type="button" class="btn" id="close-help">Zavřít</button>
+    </div>
+
+    <form id="myForm" class="container" action="/submit" method="post">
+      <div class="horizontal-container">
+        <h3>
+          Skóre:
+          <span id="score"><%= totalScore %></span>
+        </h3>
+        <h3>
+          <span id="continent-display"><%= continent %></span>
+        </h3>
+        <h3>
+          <span id="choice-display"><%= choice %></span>
+        </h3>
+      </div>
+
+      <h1 id="country-name"><%= question %></h1>
+
+      <div class="answer-container">
+        <input
+          type="text"
+          name="answer"
+          id="userInput"
+          placeholder="Napiš odpověď"
+          autofocus
+          autocomplete="off"
+        />
+      </div>
+
+      <button type="submit" class="submit-button">
+        POTVRDIT <% if (wasCorrect === true) { %>
+        <span class="checkmark">✔</span>
+        <% } else if (wasCorrect === false) { %>
+        <span class="cross" id="error">✖</span>
+        <% } %>
+      </button>
+    </form>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+
+    <script>
+      // Nápověda
+      const helpMessages = {
+        currency: `𝐙𝐤𝐫𝐚𝐭𝐤𝐚 𝐦𝐞̌𝐧𝐲:
+        
+  ✤ 3 znaky`,
+        MPZ: `𝐌𝐞𝐳𝐢𝐧𝐚́𝐫𝐨𝐝𝐧𝐢́ 𝐩𝐨𝐳𝐧𝐚́𝐯𝐚𝐜𝐢́ 𝐳𝐧𝐚𝐜̌𝐤𝐲: 
+
+  ✤ 1-3 znaky`,
+        location: `✤ Umístění v rámci kontinentu
+  ✤ 1-2 znaky
+  ✤ ST (střední)
+
+  𝐌𝐨𝐳̌𝐧𝐨𝐬𝐭𝐢: <ul class="location-menu">
+  <li id="S">S</li>
+  <li id="J">J</li>
+  <li id="V">V</li>
+  <li id="Z">Z</li>
+  <li id="SV">SV</li>
+  <li id="SZ">SZ</li>
+  <li id="JV">JV</li>
+  <li id="JZ">JZ</li>
+  <li id="ST">ST</li>
+</ul>`,
+        religion: `𝐍𝐞𝐣𝐯𝐞̌𝐭𝐬̌𝐢́ % 𝐯𝐲𝐳𝐧𝐚́𝐧𝐢́: <ul class="religion-menu">
+  <li id="anglican">anglikánské</li>
+  <li id="animism">animismus</li>
+  <li id="apostolic">apoštolské</li>
+  <li id="no-faith">bez víry</li>
+  <li id="buddhism">budhismus</li>
+  <li id="evangelical">evangelické</li>
+  <li id="hinduism">hinduismus</li>
+  <li id="ibadi-islam">ibádíjovský islám</li>
+  <li id="judaism">judaismus</li>
+  <li id="lutheran">luteránské</li>
+  <li id="orthodoxy">pravoslaví</li>
+  <li id="protestants">protestanti</li>
+  <li id="roman-catholic">římskokatolické</li>
+  <li id="roman-catholic-protestants">římskokatolické/protestanti</li>
+  <li id="sunni-islam">sunnitský islám</li>
+  <li id="syncretic-christians">synkretičtí křesťané</li>
+  <li id="shia-islam">šiitský islám</li>
+  <li id="shinto-buddhism">šintoismus/budhismus</li>
+</ul>`,
+        stateSystem: `𝐌𝐨𝐳̌𝐧𝐨𝐬𝐭𝐢: <ul class="stateSystem-menu">
+  <li id="absolutni-monarchie">absolutní monarchie</li>
+  <li id="federativni-demokraticka-republika">federativní demokratická republika</li>
+  <li id="federativni-konstitucni-monarchie">federativní konstituční monarchie</li>
+  <li id="federativni-parlamentni-republika">federativní parlamentní republika</li>
+  <li id="federativni-poloprezidentska-republika">federativní poloprezidentská republika</li>
+  <li id="federativni-prezidentska-republika">federativní prezidentská republika</li>
+  <li id="federativni-republika">federativní republika</li>
+  <li id="islamska-republika">islámská republika</li>
+  <li id="knizectvi">knížectví</li>
+  <li id="konfesionalni-republika">konfesionální republika</li>
+  <li id="konstitucni-monarchie">konstituční monarchie</li>
+  <li id="lidove-demokraticka-republika">lidově demokratická republika</li>
+  <li id="parlamentni-knizectvi">parlamentní knížectví</li>
+  <li id="parlamentni-republika">parlamentní republika</li>
+  <li id="pod-cinskou-spravou">pod Čínskou správou</li>
+  <li id="poloprezidentska-republika">poloprezidentská republika</li>
+  <li id="prezidentska-republika">prezidentská republika</li>
+  <li id="prozatimni-vlada">prozatimní vláda</li>
+  <li id="socialisticka-republika">socialistická republika</li>
+  <li id="teokraticka-monarchie">teokratická monarchie</li>
+  <li id="unitarni-konstitucni-monarchie">unitární konstituční monarchie</li>
+  <li id="unitarni-parlamentni-republika">unitární parlamentní republika</li>
+  <li id="unitarni-prezidentska-republika">unitární prezidentská republika</li>
+</ul>`,
+      };
+
+      // Funkce pro vložení specifické nápovědy do DOM
+      function displayHelpMessage(choice) {
+        const helpContainer = document.getElementById("help-text");
+        helpContainer.innerHTML = helpMessages[choice];
+        document.getElementById("help-window").style.display = "block"; // Zobrazení nápovědy
+      }
+
+      // Funkce pro vložení vybraného textu z nápovědy do inputu
+      function setInputValue(text) {
+        const userInput = document.getElementById("userInput");
+        userInput.value = text;
+
+        const form = document.getElementById("myForm");
+        form.submit(); // Odeslání formuláře po výběru
+
+        //userInput.focus(); // Nastaví kurzor do inputu
+      }
+
+      // Zvolená nesprávná odpověď
+      const wasCorrect = "<%= wasCorrect %>";
+      console.log(wasCorrect);
+      if (wasCorrect === "false") {
+        const appElement = document.getElementById("app");
+        appElement.innerHTML = `
+    <div class="game-over">
+      <a href="/" class="restart-button"><span id="restart">Restart</span></a>
+      <div class="content-container">
+        <h1 class="end-game">Konec hry!</h1>
+        <div class="image-container">
+          <img src="/images/flower.jpg" alt="Konec hry!" title="Konec hry!" />
+          <div class="overlay-score">Celkové skóre: <%= totalScore %></div>
+          <div class="correct-answer"> 
+            <% if (typeof answer !== 'undefined') { %>
+              <div class="right-answer">Správná odpověd: <%= answer %></p>
+            <% } %> 
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+        // Přidání posluchače události pro klávesnici
+        document.addEventListener("keydown", function (event) {
+          window.location.href = "/";
+        });
+
+        // Přidání posluchače události pro kliknutí myší
+        document.addEventListener("click", function (event) {
+          window.location.href = "/";
+        });
+      }
+
+      let currentChoice = "capital"; // Výchozí volba typu otázky
+      let currentContinent = "world"; // Výchozí kontinent
+
+      // Funkce pro odeslání volby na server
+      async function sendChoiceToServer(choice, continent) {
+        console.log("Sending to server - choice:", choice);
+        console.log("Sending to server - continent:", continent);
+
+        try {
+          const response = await fetch("/select-choice", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ choice, continent }),
+          });
+
+          console.log("Response status:", response.status);
+
+          if (response.ok) {
+            const data = await response.json();
+            console.log("Response from server:", data);
+
+            document.getElementById("choice-display").textContent = data.choice;
+            document.getElementById("continent-display").textContent =
+              data.continent;
+            document.getElementById("country-name").textContent = data.question;
+            document.getElementById("score").textContent = data.totalScore;
+
+            // Skryje nápovědu, pokud je aktuální volba "capital"
+            const helpWindow = document.getElementById("help-window");
+            console.log("Data Choice: " + data.choice);
+            if (data.choice === "capital") {
+              helpWindow.style.display = "none";
+            }
+          } else {
+            console.error("Failed to update selection");
+          }
+        } catch (error) {
+          console.error("Error during fetch:", error);
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const helpWindow = document.getElementById("help-window");
+        const helpText = document.getElementById("help-text");
+        const closeHelpButton = document.getElementById("close-help");
+
+        // Obnovení stavu nápovědy z localStorage, pokud existuje
+        const savedChoice = localStorage.getItem("currentChoice");
+        const savedContinent =
+          localStorage.getItem("currentContinent") || "world";
+
+        let currentChoice = savedChoice || "capital"; // Výchozí výběr
+        let currentContinent = savedContinent; // Výchozí kontinent
+
+        // Pokud existuje uložená volba, zobraz nápovědu
+        if (savedChoice) {
+          helpText.innerHTML =
+            helpMessages[savedChoice] || "Nápověda není k dispozici.";
+          helpWindow.style.display = "block";
+        }
+
+        // Skrytí nápovědy, pokud je aktuální volba "capital" po správné odpovědi
+        if (currentChoice === "capital") {
+          helpWindow.style.display = "none";
+        }
+
+        // Přidání posluchače událostí pro výběr z navigačního menu
+        document.addEventListener("click", function (event) {
+          const choice = event.target.getAttribute("data-choice");
+          const continent = event.target.getAttribute("data-continent");
+
+          if (choice) {
+            // Pokud je kliknuto na nějaký kontinent
+            if (choice === "continent") {
+              currentContinent = continent || "world"; // Aktualizuje aktuální volbu
+              helpWindow.style.display = "none"; // Skryje nápovědu
+              localStorage.removeItem("currentChoice"); // Odstraňuje uloženou volbu
+              localStorage.setItem("currentContinent", currentContinent); // Uloží aktuální volbu
+            } else {
+              // Pokud je kliknuto na jiný výběr z navigačního menu než kontinent
+              currentChoice = choice; // Aktualizuje aktuální výběr
+              localStorage.setItem("currentChoice", currentChoice); // Uloží aktuální výběr
+
+              displayHelpMessage(currentChoice); // Použití specifické nápovědy
+
+              if (currentChoice === "capital") {
+                helpWindow.style.display = "none"; // Skryje nápovědu pro "capital"
+              } else {
+                helpText.innerHTML =
+                  helpMessages[choice] || "Nápověda není k dispozici.";
+                helpWindow.style.display = "block"; // Zobrazí nápovědu
+              }
+            }
+
+            console.log("Updated - currentChoice:", currentChoice);
+            console.log("Updated - currentContinent:", currentContinent);
+
+            sendChoiceToServer(currentChoice, currentContinent);
+          }
+        });
+
+        // Posluchač pro specifickou nápovědu a vložení hodnoty do inputu
+        document.body.addEventListener("click", function (event) {
+          // Kontroluje, zda kliknutý prvek odpovídá některému z uvedených selektorů
+          if (
+            event.target.matches(
+              ".religion-menu li, .stateSystem-menu li, .location-menu li"
+            )
+          ) {
+            const text = event.target.textContent; // Získání textového obsahu
+            setInputValue(text); // Nastavení hodnoty inputu na získaný text
+          }
+        });
+
+        // Posluchač pro zavření okna s nápovědou
+        closeHelpButton.addEventListener("click", function () {
+          console.log("Closing help window");
+          helpWindow.style.display = "none"; // Skryje nápovědu
+          localStorage.removeItem("currentChoice"); // Odstraní uloženou volbu
+        });
+      });
+    </script>
+  </body>
+</html>

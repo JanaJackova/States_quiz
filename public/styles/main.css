@@ -1,0 +1,466 @@
+body {
+  background-image: url(../images/question-mark.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  max-width: 40%;
+  height: 300px;
+  margin: 15% auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding-top: 10px;
+  border: 1px solid rgb(10, 151, 17);
+  transition: margin-right 0.3s; /* Plynulý přechod pro margin-right */
+}
+
+h1 {
+  text-align: center;
+}
+
+.answer-container {
+  width: 100%;
+  text-align: center;
+}
+
+.religion-menu,
+.stateSystem-menu,
+.location-menu {
+  list-style-type: none; /* Odstraní výchozí tečky */
+  padding: 0; /* Odstraní výchozí výplň */
+  margin: 0; /* Odstraní výchozí okraje */
+}
+
+.religion-menu li,
+.stateSystem-menu li,
+.location-menu li {
+  padding: 0; /* Odstraní výplň každého <li> */
+  margin: 0; /* Odstraní okraje každého <li> */
+  line-height: 2px; /* Nastaví řádkovou výšku, což odstraní mezery mezi položkami */
+}
+
+.religion-menu li::before,
+.stateSystem-menu li::before,
+.location-menu li::before {
+  content: "☙ "; /* Přidá symbol před každý <li> */
+}
+
+.religion-menu li:hover,
+.stateSystem-menu li:hover,
+.location-menu li:hover {
+  color: rgb(253, 76, 76);
+  cursor: pointer; /* Přidání kurzoru pro indikaci, že je to klikatelné */
+}
+
+input {
+  text-align: center;
+  width: 50%;
+  margin: 10px auto;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.submit-button {
+  font-weight: 800;
+  letter-spacing: 2px;
+  font-size: large;
+  display: block;
+  width: 30%;
+  padding: 10px;
+  background-color: #3aa083;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  margin: 0 auto;
+}
+
+.horizontal-container {
+  display: flex;
+  justify-content: space-between; /* Rovnoměrné rozložení prostorů mezi prvky */
+  width: 100%; /* Zajistí, že kontejner zabírá 100% šířky rodiče */
+}
+
+.horizontal-container h3 {
+  flex: 1; /* Každý h3 zabírá stejnou část šířky */
+  text-align: center; /* Text uvnitř h3 je vycentrován */
+  margin: 0; /* Odstraní výchozí margin u h3 */
+}
+
+.horizontal-container h3:first-child {
+  text-align: left; /* Text prvního h3 je zarovnaný vlevo */
+}
+
+.horizontal-container h3:nth-child(2) {
+  text-align: center; /* Text druhého h3 je zarovnaný na střed */
+}
+
+.horizontal-container h3:last-child {
+  text-align: right; /* Text třetího h3 je zarovnaný vpravo */
+}
+
+button:hover {
+  background-color: #79d6a9;
+}
+
+#result {
+  text-align: center;
+  font-size: 24px;
+}
+
+.checkmark {
+  color: transparent;
+  animation: checkmark 0.5s ease;
+}
+
+.cross {
+  color: transparent;
+  animation: cross 0.5s ease;
+}
+
+@keyframes checkmark {
+  0% {
+    color: transparent;
+  }
+  100% {
+    color: green;
+  }
+}
+
+@keyframes cross {
+  0% {
+    color: transparent;
+  }
+  100% {
+    color: red;
+  }
+}
+
+.btn-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  padding: 10px;
+  border-style: dotted;
+  border-radius: 25px;
+  font-weight: 800;
+}
+
+.choice-button {
+  font-size: 35px;
+  border-radius: 25px;
+  border-style: dotted;
+  color: white;
+}
+
+.dropdown-button {
+  font-weight: 700;
+  color: white;
+  margin: 10px;
+  font-size: 35px;
+  border-radius: 15px;
+  background-color: rgb(253, 76, 76);
+}
+
+.choice-button:hover {
+  color: rgb(253, 76, 76);
+}
+
+.dropdown-button:hover {
+  color: rgb(253, 76, 76);
+  color: white;
+}
+
+.restart-button:hover {
+  color: rgb(253, 76, 76);
+}
+
+.dropdown-menu {
+  background-color: rgb(253, 76, 76);
+}
+
+.dropdown-item {
+  color: white;
+}
+
+#choice-display,
+#continent-display {
+  color: rgb(253, 76, 76);
+}
+
+.game-over {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh; /* Výška na celou obrazovku */
+  text-align: center;
+  position: relative; /* Umožňuje umístění relativních prvků uvnitř */
+}
+
+.restart-button {
+  position: absolute; /* Umožňuje umístění tlačítka na vrchol */
+  top: 20px; /* Vzdálenost od vrcholu */
+  left: 50%;
+  transform: translateX(-50%); /* Centrum horizontálně */
+  background-color: rgb(253, 76, 76);
+  letter-spacing: 2px; /* Mezera mezi znaky v textu */
+  color: white;
+  padding: 10px 40px;
+  font-size: 18px;
+  text-align: center;
+  text-decoration: none; /* Odstranění dekorace textu */
+  border-radius: 30px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.restart-button:hover {
+  background-color: rgb(253, 76, 76);
+  color: white;
+}
+
+.end-game {
+  color: white;
+  background-color: black;
+  font-weight: 500;
+  padding: 10px 100px;
+  margin: 20px 0;
+  z-index: 1; /* Umožní textu "Konec hry" být nad obrázkem */
+}
+
+.image-container {
+  position: relative;
+  display: inline-block;
+  z-index: 0; /* Umožní textu být nad obrázkem */
+}
+
+.image-container img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.overlay-score,
+.right-answer {
+  position: absolute;
+  font-size: 18px;
+  color: white;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 5px;
+  box-sizing: border-box; /* Zahrnuje padding do velikosti boxu */
+  overflow: hidden; /* Zamezí textu ovlivňovat velikost */
+  height: 40px; /* Zajišťuje stejnou výšku */
+}
+
+.overlay-score {
+  bottom: 0px;
+  right: 7px;
+}
+
+.right-answer {
+  bottom: 0px;
+  left: 7px;
+}
+
+h1,
+.end-game {
+  margin: 0;
+  padding: 0;
+}
+
+#restart {
+  font-weight: 400;
+  font-size: 25px;
+}
+
+#help-window {
+  position: fixed;
+  right: 10px;
+  top: 150px;
+  width: 320px;
+  height: auto;
+  background-color: #f9f9f9;
+  border-left: 1px solid rgb(10, 151, 17);
+  border-radius: 10px;
+  padding: 10px;
+  overflow-y: auto; /* Při přetečení obsahu se přidá svislá rolovací lišta */
+  display: none; /* Skryje uzavírací okno při načtení stránky */
+}
+
+#close-help {
+  background-color: rgb(253, 76, 76);
+  color: white;
+  text-align: center;
+  border-radius: 10px;
+}
+
+#help-text {
+  white-space: pre-line; /* Umožňuje zobrazení nových řádků */
+}
+
+/* Základní styly pro navigaci */
+.btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  padding: 10px;
+}
+
+.btn {
+  margin: 5px;
+}
+
+/* Pro obrazovky s šířkou 600px nebo méně */
+@media (max-width: 600px) {
+  .container {
+    max-width: 90%;
+    height: auto;
+    margin: 10% auto;
+  }
+
+  input {
+    width: 80%;
+  }
+
+  .submit-button {
+    width: 80%;
+  }
+
+  .horizontal-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .choice-button,
+  .dropdown-button {
+    font-size: 30px;
+  }
+
+  .restart-button {
+    font-size: 16px;
+    padding: 8px 30px;
+  }
+
+  .btn-group {
+    flex-direction: column; /* Uloží tlačítka vertikálně */
+    align-items: center; /* Uloží tlačítka do středu */
+  }
+
+  .dropdown-menu {
+    width: 100%;
+    text-align: center; /* Uloží text do středu */
+  }
+
+  .dropdown-button {
+    width: 100%;
+    margin-bottom: 10px; /* Přidá mezeru pod dropdown */
+  }
+
+  .choice-button {
+    width: 100%;
+    font-size: 20px; /* Zmenší velikost písma pro menší obrazovky */
+  }
+
+  #help-window {
+    width: 90%; /* Šířka nápovědu na menších obrazovkách */
+    right: 5px; /* Uloží nápovědu blíže k pravému okraji */
+    top: 10px; /* Uloží nápovědu blíže k hornímu okraji */
+  }
+
+  .image-container {
+    display: flex;
+    flex-direction: column; /* Zarovná obsah do sloupce */
+    align-items: center; /* Vycentruje obsah horizontálně */
+    justify-content: center; /* Vycentruje obsah vertikálně */
+    text-align: center; /* Zarovná text na střed */
+  }
+
+  .overlay-score,
+  .right-answer {
+    position: static; /* Změní pozici na statickou pro zarovnání do sloupce */
+    width: 100%; /* Nastaví šířku na 100% rodiče */
+    margin-bottom: 10px; /* Přidá mezery mezi textové bloky */
+  }
+
+  .right-answer {
+    width: 100%;
+    height: 75px;
+  }
+}
+
+/* Pro obrazovky s šířkou 768px nebo méně */
+@media (max-width: 768px) {
+  .container {
+    max-width: 80%;
+    padding: 15px;
+  }
+
+  input {
+    width: 100%;
+  }
+
+  .submit-button {
+    width: 50%;
+  }
+
+  .horizontal-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .choice-button,
+  .dropdown-button {
+    font-size: 32px;
+  }
+
+  .btn-group {
+    flex-direction: column; /* Uloží tlačítka vertikálně */
+    align-items: center; /* Uloží tlačítka do středu */
+  }
+
+  .dropdown-menu {
+    width: 100%;
+  }
+
+  .choice-button {
+    font-size: 25px; /* Zmenší velikost písma pro menší obrazovky */
+  }
+
+  #help-window {
+    width: 90%; /* Šířka nápovědy na menších obrazovkách */
+    right: 5px; /* Uloží nápovědu blíže k pravému okraji */
+    top: 10px; /* Uloží nápovědu blíže k hornímu okraji */
+  }
+
+  .image-container {
+    display: flex;
+    flex-direction: column; /* Zarovná obsah do sloupce */
+    align-items: center; /* Vycentruje obsah horizontálně */
+    text-align: center; /* Zarovná text na střed */
+  }
+
+  .overlay-score,
+  .right-answer {
+    position: static; /* Změní pozici na statickou pro zarovnání do sloupce */
+    width: 90%; /* Nastaví šířku na 90% rodiče */
+    margin: 10px 0; /* Přidá mezery mezi textovými bloky */
+    max-width: 300px;
+  }
+
+  .right-answer {
+    width: 100%; /* Nastaví šířku na 100% rodiče */
+  }
+}
